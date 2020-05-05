@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>simple-rest-service</name>
-
+    
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -43,6 +43,12 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+        	<groupId>io.rest-assured</groupId>
+        	<artifactId>rest-assured</artifactId>
+        	<version>3.3.0</version>
+        	<scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -53,8 +59,8 @@
                 <version>2.5.1</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
