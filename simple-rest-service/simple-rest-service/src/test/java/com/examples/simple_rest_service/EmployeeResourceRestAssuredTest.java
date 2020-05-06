@@ -15,6 +15,7 @@ import io.restassured.RestAssured;
 import javax.ws.rs.core.MediaType;
 
 public class EmployeeResourceRestAssuredTest {
+	private static final String EMPLOYEES = "employees";
 	private HttpServer server;
 	
 	@BeforeClass
@@ -33,16 +34,38 @@ public class EmployeeResourceRestAssuredTest {
 	}
 	
 	@Test
-	public void testGetIt_XML() {
+	public void test_Get_all_employees() {
 		given()
 			.accept(MediaType.APPLICATION_XML)
 		.when()
-			.get("employee")
+			.get(EMPLOYEES)
 		.then()
 			.statusCode(200)
 			.assertThat()
-				.body("employee.id",equalTo("E1"),
-					"employee.name",equalTo("An employee"),
-					"employee.salary",equalTo("1000"));
+				.body("employees.employee[0].id",equalTo("ID1"),
+					"employees.employee[0].name",equalTo("Tizio"),
+					"employees.employee[0].salary",equalTo("1000"),
+					"employees.employee[1].id",equalTo("ID2"),
+					"employees.employee[1].name",equalTo("Caio"),
+					"employees.employee[1].salary",equalTo("2000"),
+					"employees.employee[2].id",equalTo("ID3"),
+					"employees.employee[2].name",equalTo("Sempronio"),
+					"employees.employee[2].salary",equalTo("3000")
+				);
+	}
+	
+	@Test
+	public void test_Get_one_employee() {
+		given()
+			.accept(MediaType.APPLICATION_XML)
+		.when()
+			.get(EMPLOYEES+"/ID2")
+		.then()
+			.statusCode(200)
+			.assertThat()
+				.body("employee.id",equalTo("ID2"),
+					"employee.name",equalTo("Caio"),
+					"employee.salary",equalTo("2000")
+				);
 	}
 }
