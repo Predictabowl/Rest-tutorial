@@ -14,7 +14,7 @@ import com.examples.Main;
 import io.restassured.RestAssured;
 import javax.ws.rs.core.MediaType;
 
-public class MyResourceRestAssuredTest {
+public class EmployeeResourceRestAssuredTest {
 	private HttpServer server;
 	
 	@BeforeClass
@@ -33,43 +33,16 @@ public class MyResourceRestAssuredTest {
 	}
 	
 	@Test
-	public void testGetIt_Text() {
-		given()
-			.accept(MediaType.TEXT_PLAIN)
-		.when()
-			.get("myresource")
-		.then()
-			.statusCode(200)
-			.assertThat().contentType(MediaType.TEXT_PLAIN)
-				.and()
-				.body(equalTo("Got it!"));
-	}
-	
-	@Test
 	public void testGetIt_XML() {
 		given()
-			.accept(MediaType.TEXT_XML)
+			.accept(MediaType.APPLICATION_XML)
 		.when()
-			.get("myresource")
+			.get("employee")
 		.then()
 			.statusCode(200)
-			.assertThat().contentType(MediaType.TEXT_XML)
-				.and()
-			 	.body("hello", equalTo("Got it (XML)!"));
+			.assertThat()
+				.body("employee.id",equalTo("E1"),
+					"employee.name",equalTo("An employee"),
+					"employee.salary",equalTo("1000"));
 	}
-	
-	@Test
-	public void testGetIt_HTML() {
-		given()
-			.accept(MediaType.TEXT_HTML)
-		.when()
-			.get("myresource")
-		.then()
-			.statusCode(200)
-			.assertThat().contentType(MediaType.TEXT_HTML)
-				.and()
-			 	.body("html.head.title", equalTo("Hello Jersey"))
-			 	.body("html.body", equalTo("Got it (HTML)!"));
-	}
-
 }
