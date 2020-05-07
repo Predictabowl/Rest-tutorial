@@ -6,6 +6,7 @@ import com.examples.repository.EmployeeRepository;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -30,6 +31,7 @@ public class EmployeeResource {
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_XML)
 	public Employee getOnEmployee(@PathParam("id") String id) {
-		return EmployeeRepository.instance.findOne(id);
+		return EmployeeRepository.instance.findOne(id).orElseThrow(() ->
+				new NotFoundException("Employee id not found: "+id));
 	}
 }

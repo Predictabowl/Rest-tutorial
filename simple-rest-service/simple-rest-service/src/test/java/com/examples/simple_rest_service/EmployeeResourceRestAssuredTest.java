@@ -76,7 +76,7 @@ public class EmployeeResourceRestAssuredTest {
 		.when()
 			.get(EMPLOYEES+"/notAnId")
 		.then()
-			.statusCode(204);
+			.statusCode(404);
 	}
 	
 	@Test
