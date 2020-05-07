@@ -76,7 +76,9 @@ public class EmployeeResourceRestAssuredTest {
 		.when()
 			.get(EMPLOYEES+"/notAnId")
 		.then()
-			.statusCode(404);
+			.statusCode(404)
+			.contentType(MediaType.TEXT_PLAIN)
+			.body(equalTo("Employee id not found: notAnId"));
 	}
 	
 	@Test
