@@ -68,4 +68,39 @@ public class EmployeeResourceRestAssuredTest {
 					"employee.salary",equalTo("2000")
 				);
 	}
+	
+	@Test
+	public void test_get_one_employee_with_no_existing_id() {
+		given()
+			.accept(MediaType.APPLICATION_XML)
+		.when()
+			.get(EMPLOYEES+"/notAnId")
+		.then()
+			.statusCode(204);
+	}
+	
+	@Test
+	public void test_get_all_employees_with_root_paths() {
+		// This is a variation to show alternative use of XML
+		given()
+			.accept(MediaType.APPLICATION_XML)
+		.when()
+			.get(EMPLOYEES)
+		.then()
+			.statusCode(200)
+			.assertThat()
+				.root("employees.employee[0]")
+				.body("id", equalTo("ID1"),
+					"name", equalTo("Tizio"),
+					"salary",equalTo("1000"))
+				.root("employees.employee[1]")
+				.body("id", equalTo("ID2"),
+					"name", equalTo("Caio"),
+					"salary",equalTo("2000"))
+				.root("employees.employee[2]")
+				.body("id", equalTo("ID3"),
+					"name", equalTo("Sempronio"),
+					"salary",equalTo("3000")
+				);
+	}
 }
