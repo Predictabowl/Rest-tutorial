@@ -55,7 +55,7 @@ public class EmployeeResourceRestAssuredTest {
 	}
 	
 	@Test
-	public void test_Get_one_employee() {
+	public void test_Get_one_employee_XML() {
 		given()
 			.accept(MediaType.APPLICATION_XML)
 		.when()
@@ -70,7 +70,7 @@ public class EmployeeResourceRestAssuredTest {
 	}
 	
 	@Test
-	public void test_get_one_employee_with_no_existing_id() {
+	public void test_get_one_employee_with_no_existing_id_XML() {
 		given()
 			.accept(MediaType.APPLICATION_XML)
 		.when()
@@ -104,5 +104,53 @@ public class EmployeeResourceRestAssuredTest {
 					"name", equalTo("Sempronio"),
 					"salary",equalTo("3000")
 				);
+	}
+	
+	@Test
+	public void test_get_all_employees_JSON() {
+		given()
+			.accept(MediaType.APPLICATION_JSON)
+		.when()
+			.get(EMPLOYEES)
+		.then()
+			.statusCode(200)
+			.assertThat()
+			.body("id[0]",equalTo("ID1"),
+				"name[0]",equalTo("Tizio"),
+				"salary[0]", equalTo(1000),
+				"id[1]",equalTo("ID2"),
+				"name[1]",equalTo("Caio"),
+				"salary[1]", equalTo(2000),
+				"id[2]",equalTo("ID3"),
+				"name[2]",equalTo("Sempronio"),
+				"salary[2]", equalTo(3000)
+			);
+	}
+	
+	@Test
+	public void test_Get_one_employee_JSON() {
+		given()
+			.accept(MediaType.APPLICATION_JSON)
+		.when()
+			.get(EMPLOYEES+"/ID2")
+		.then()
+			.statusCode(200)
+			.assertThat()
+				.body("id",equalTo("ID2"),
+					"name",equalTo("Caio"),
+					"salary",equalTo(2000)
+				);
+	}
+	
+	@Test
+	public void test_get_one_employee_with_no_existing_id_JSON() {
+		given()
+			.accept(MediaType.APPLICATION_JSON)
+		.when()
+			.get(EMPLOYEES+"/notAnId")
+		.then()
+			.statusCode(404)
+			.contentType(MediaType.TEXT_PLAIN)
+			.body(equalTo("Employee id not found: notAnId"));
 	}
 }

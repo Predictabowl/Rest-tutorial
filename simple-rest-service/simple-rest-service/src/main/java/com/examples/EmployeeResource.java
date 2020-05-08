@@ -22,14 +22,14 @@ import javax.ws.rs.core.MediaType;
 public class EmployeeResource {
 
 	@GET
-	@Produces(MediaType.APPLICATION_XML)
-	public List<Employee> getItXML() {
+	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+	public List<Employee> getAllEmployees() {
 		return EmployeeRepository.instance.findAll();
 	}
 	
 	@GET
 	@Path("{id}")
-	@Produces(MediaType.APPLICATION_XML)
+	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
 	public Employee getOnEmployee(@PathParam("id") String id) {
 		return EmployeeRepository.instance.findOne(id).orElseThrow(() ->
 				new NotFoundException("Employee id not found: "+id));
