@@ -240,5 +240,25 @@ public class EmployeeResourceRestAssuredTest extends JerseyTest{
 			.header("Location", r -> Matchers.endsWith(EMPLOYEES+"/ID"));
 	}
 	
-
+	@Test
+	public void tes_put_new_employee(){
+		JsonObject jsonObj = Json.createObjectBuilder()
+				.add("name", "passed name")
+				.add("salary", 1000)
+				.build();
+		when(employeeRepository.save(new Employee("ID", "passed name", 1000)))
+			.thenReturn(new Employee("ID", "returned name", 1250));
+		
+		given()
+			.contentType(MediaType.APPLICATION_JSON)
+			.body(jsonObj.toString())
+		.when()
+			.put(EMPLOYEES+"/ID")
+		.then()
+			.statusCode(Status.OK.getStatusCode())
+			.assertThat()
+				.body("id",equalTo("ID"),
+					"name",equalTo("returned name"),
+					"salary",equalTo(1250));
+	}
 }

@@ -74,7 +74,8 @@ public class EmployeeResource {
 	@Path("{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Employee replaceEmployee(@PathParam("id") Employee employee) {
-		return null;
+	public Employee replaceEmployee(@PathParam("id") String id, Employee employee) {
+		employee.setEmployeeId(id);
+		return employeeRepository.save(employee);
 	}
 }

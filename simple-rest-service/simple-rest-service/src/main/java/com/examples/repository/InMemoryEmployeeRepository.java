@@ -1,8 +1,12 @@
 package com.examples.repository;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import javax.inject.Inject;
 
 import com.examples.model.Employee;
 
@@ -15,26 +19,34 @@ import com.examples.model.Employee;
  */
 public class InMemoryEmployeeRepository implements EmployeeRepository{
 
-	private List<Employee> employees = new LinkedList<Employee>();
+	private Map<String, Employee> employees;
 	
-	public InMemoryEmployeeRepository() {
+	@Inject
+	public InMemoryEmployeeRepository(Map<String, Employee> employees) {
+		this.employees = employees;
 		// initialize some contents
-		employees.add(new Employee("ID1", "Tizio", 1000));
-		employees.add(new Employee("ID2", "Caio", 2000));
-		employees.add(new Employee("ID3", "Sempronio", 3000));
+		mapPut(new Employee("ID1", "Tizio", 1000));
+		mapPut(new Employee("ID2", "Caio", 2000));
+		mapPut(new Employee("ID3", "Sempronio", 3000));
+	}
+	
+	private void mapPut(Employee employee) {
+		employees.put(employee.getEmployeeId(),employee);
 	}
 	
 	public synchronized List<Employee> findAll(){
-		return employees;
+		return new ArrayList<>(employees.values());
 	}
 	
 	public synchronized Optional<Employee> findOne(String id) {
-		return employees.stream().filter(p -> p.getEmployeeId().equals(id)).findFirst();
+		return Optional.ofNullable(employees.get(id));
 	}
 	
 	public synchronized Employee save(Employee employee) {
-		employee.setEmployeeId("ID"+(employees.size()+1)); // never do this unless is for learning and testing
-		employees.add(employee);
+		if (employee.getEmployeeId() == null) {
+			employee.setEmployeeId("ID"+(employees.size()+1)); // never do this unless is for learning and testing
+		}
+		mapPut(employee);
 		return employee;
 	}
 }
