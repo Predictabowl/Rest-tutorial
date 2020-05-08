@@ -5,6 +5,7 @@ import com.examples.repository.EmployeeRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
@@ -20,18 +21,21 @@ import javax.ws.rs.core.MediaType;
  */
 @Path("employees")
 public class EmployeeResource {
+	
+	@Inject
+	private EmployeeRepository employeeRepository;
 
 	@GET
 	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
 	public List<Employee> getAllEmployees() {
-		return EmployeeRepository.instance.findAll();
+		return employeeRepository.findAll();
 	}
 	
 	@GET
 	@Path("{id}")
 	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
 	public Employee getOnEmployee(@PathParam("id") String id) {
-		return EmployeeRepository.instance.findOne(id).orElseThrow(() ->
+		return employeeRepository.findOne(id).orElseThrow(() ->
 				new NotFoundException("Employee id not found: "+id));
 	}
 }
