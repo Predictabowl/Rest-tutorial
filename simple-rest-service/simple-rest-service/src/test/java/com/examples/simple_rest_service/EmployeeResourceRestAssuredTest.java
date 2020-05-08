@@ -2,7 +2,6 @@ package com.examples.simple_rest_service;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -13,11 +12,11 @@ import java.util.Optional;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.util.collections.ListUtil;
 
 import com.examples.EmployeeResource;
 import com.examples.NotFoundMapper;
@@ -26,8 +25,11 @@ import com.examples.repository.EmployeeRepository;
 
 import io.restassured.RestAssured;
 
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
 
 public class EmployeeResourceRestAssuredTest extends JerseyTest{
 	private static final String EMPLOYEES = "employees";
@@ -214,4 +216,29 @@ public class EmployeeResourceRestAssuredTest extends JerseyTest{
 			.assertThat()
 				.body(equalTo(String.valueOf(employees.size())));
 	}
+	
+	@Test
+	public void test_post_new_employee() {
+		JsonObject jsonObj = Json.createObjectBuilder()
+				.add("name", "passed name")
+				.add("salary", 1000)
+				.build();
+		when(employeeRepository.save(new Employee(null, "passed name", 1000)))
+			.thenReturn(new Employee("ID", "returned name", 1250));
+		
+		given()
+			.contentType(MediaType.APPLICATION_JSON)
+			.body(jsonObj.toString())
+		.when()
+			.post(EMPLOYEES)
+		.then()
+			.statusCode(Status.CREATED.getStatusCode())
+			.assertThat()
+				.body("id",equalTo("ID"),
+					"name",equalTo("returned name"),
+					"salary",equalTo(1250))
+			.header("Location", r -> Matchers.endsWith(EMPLOYEES+"/ID"));
+	}
+	
+
 }

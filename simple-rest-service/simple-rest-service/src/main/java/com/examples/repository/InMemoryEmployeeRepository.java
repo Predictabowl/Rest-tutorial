@@ -24,11 +24,17 @@ public class InMemoryEmployeeRepository implements EmployeeRepository{
 		employees.add(new Employee("ID3", "Sempronio", 3000));
 	}
 	
-	public List<Employee> findAll(){
+	public synchronized List<Employee> findAll(){
 		return employees;
 	}
 	
-	public Optional<Employee> findOne(String id) {
+	public synchronized Optional<Employee> findOne(String id) {
 		return employees.stream().filter(p -> p.getEmployeeId().equals(id)).findFirst();
+	}
+	
+	public synchronized Employee save(Employee employee) {
+		employee.setEmployeeId("ID"+(employees.size()+1)); // never do this unless is for learning and testing
+		employees.add(employee);
+		return employee;
 	}
 }

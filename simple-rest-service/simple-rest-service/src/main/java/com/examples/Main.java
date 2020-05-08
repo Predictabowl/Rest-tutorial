@@ -11,6 +11,8 @@ import com.examples.repository.InMemoryEmployeeRepository;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.inject.Singleton;
+
 /**
  * Main class.
  *
@@ -21,6 +23,7 @@ public class Main {
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
+     * 
      * @return Grizzly HTTP server.
      */
     public static HttpServer startServer() {
@@ -30,7 +33,8 @@ public class Main {
         		.register(new AbstractBinder() {
 					@Override
 					protected void configure() {
-						bind(InMemoryEmployeeRepository.class).to(EmployeeRepository.class);
+						bind(InMemoryEmployeeRepository.class).to(EmployeeRepository.class)
+							.in(Singleton.class);
 					}
 				});
 
