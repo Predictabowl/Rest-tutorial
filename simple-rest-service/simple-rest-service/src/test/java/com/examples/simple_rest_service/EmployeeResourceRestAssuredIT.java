@@ -153,4 +153,18 @@ public class EmployeeResourceRestAssuredIT {
 			.contentType(MediaType.TEXT_PLAIN)
 			.body(equalTo("Employee id not found: notAnId"));
 	}
+	
+	@Test
+	public void just_for_demo_can_access_also_MyResource() {
+		given().
+			accept(MediaType.TEXT_PLAIN)
+		.when()
+			.get("myresource")
+		.then()
+			.statusCode(200)
+			.assertThat()
+				.contentType(MediaType.TEXT_PLAIN)
+				.and()
+				.body(equalTo("Got it!"));
+	}
 }

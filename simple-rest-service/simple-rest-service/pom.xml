@@ -40,16 +40,10 @@
 		</dependency>
 
 		<!-- uncomment this to get JSON support: -->
-		<!--  we use Moxy instead
-		<dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-json-binding</artifactId>
-		</dependency>
-		-->
-		<!--  Moxy is used to have a proper handling of json elements
-			using only the @XmlElement without manual configuration
-			https://jersey.github.io/documentation/latest/media.html#json.moxy
-		-->
+		<!-- we use Moxy instead <dependency> <groupId>org.glassfish.jersey.media</groupId> 
+			<artifactId>jersey-media-json-binding</artifactId> </dependency> -->
+		<!-- Moxy is used to have a proper handling of json elements using only 
+			the @XmlElement without manual configuration https://jersey.github.io/documentation/latest/media.html#json.moxy -->
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-moxy</artifactId>
@@ -66,6 +60,12 @@
 			<version>3.3.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>3.3.3</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- JAXB has been removed from JDK 11 -->
 		<!-- I'll try to use jakarta instead of javax -->
 		<dependency>
@@ -76,6 +76,12 @@
 		<dependency>
 			<groupId>org.glassfish.jersey.inject</groupId>
 			<artifactId>jersey-hk2</artifactId>
+		</dependency>
+		<!-- We add this to use JerseyTest class -->
+		<dependency>
+			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
+			<artifactId>jersey-test-framework-provider-grizzly2</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
