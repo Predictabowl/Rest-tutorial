@@ -38,4 +38,11 @@ public class EmployeeResource {
 		return employeeRepository.findOne(id).orElseThrow(() ->
 				new NotFoundException("Employee id not found: "+id));
 	}
+	
+	@GET
+	@Path("count")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getCount() {
+		return String.valueOf(employeeRepository.findAll().size());
+	}
 }

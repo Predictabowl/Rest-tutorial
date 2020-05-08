@@ -2,8 +2,10 @@ package com.examples.simple_rest_service;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.util.collections.ListUtil;
 
 import com.examples.EmployeeResource;
 import com.examples.NotFoundMapper;
@@ -197,5 +200,18 @@ public class EmployeeResourceRestAssuredTest extends JerseyTest{
 			.get("myresource")
 		.then()
 			.statusCode(404);
+	}
+	
+	@Test
+	public void test_count() {
+		List<Employee> employees = Arrays.asList(new Employee(), new Employee());
+		when(employeeRepository.findAll()).thenReturn(employees);
+		
+		when()
+			.get(EMPLOYEES+"/count")
+		.then()
+			.statusCode(200)
+			.assertThat()
+				.body(equalTo(String.valueOf(employees.size())));
 	}
 }
