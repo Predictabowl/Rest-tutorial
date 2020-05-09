@@ -117,7 +117,10 @@ public class EmployeeResourceRestAssuredIT {
 	@Test
 	public void test_post_new_employee() {
 		JsonObject jsonObj = Json.createObjectBuilder().add("name", "test employee").add("salary", 1100).build();
-		Response response = given().contentType(MediaType.APPLICATION_JSON).body(jsonObj.toString()).when()
+		Response response = given()
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(jsonObj.toString())
+			.when()
 				.post(EMPLOYEES);
 
 		String id = response.body().path("id");
@@ -147,5 +150,38 @@ public class EmployeeResourceRestAssuredIT {
 		Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> futures.stream().allMatch(f -> f.isDone()));
 
 		Assertions.assertThat(ids).doesNotHaveDuplicates();
+	}
+	
+	@Test
+	public void test_put_replace_employee() {
+		JsonObject jsonObj = Json.createObjectBuilder()
+				.add("name","modified employee")
+				.add("salary", 1750)
+				.build();
+		
+		given()
+			.contentType(MediaType.APPLICATION_JSON)
+			.body(jsonObj.toString())
+		.when()
+			.put(EMPLOYEES+"/ID1")
+		.then()
+			.statusCode(Status.OK.getStatusCode())
+			.assertThat()
+				.body("id",equalTo("ID1"),
+					"name", equalTo("modified employee"),
+					"salary", equalTo(1750)
+				);
+		
+		given()
+			.accept(MediaType.APPLICATION_JSON)
+		.when()
+			.get(EMPLOYEES+"/ID1")
+		.then()
+			.statusCode(Status.OK.getStatusCode())
+			.assertThat()
+				.body("id",equalTo("ID1"),
+					"name", equalTo("modified employee"),
+					"salary", equalTo(1750)
+				);
 	}
 }
