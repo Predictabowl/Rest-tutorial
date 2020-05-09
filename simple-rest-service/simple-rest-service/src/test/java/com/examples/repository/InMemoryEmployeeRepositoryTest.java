@@ -3,7 +3,6 @@ package com.examples.repository;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,33 +16,60 @@ public class InMemoryEmployeeRepositoryTest {
 	
 	@Before
 	public void setUp() {
-		employees = new HashMap<String, Employee>();
+		employees = new HashMap<>();
 		repository = new InMemoryEmployeeRepository(employees);
+		employees.clear();
+	}
+	
+	private void putMap(Employee employee) {
+		employees.put(employee.getEmployeeId(), employee);
 	}
 	
 	@Test
 	public void test_findAll() {
+		assertThat(repository.findAll()).isEmpty();
+		
+		putMap(new Employee("ID1", "First employee", 1000));
+		putMap(new Employee("ID3", "Third employee", 1250));
+		
 		assertThat(repository.findAll()).containsExactlyInAnyOrder(
-				new Employee("ID1", "Tizio", 1000),
-				new Employee("ID2", "Caio", 2000),
-				new Employee("ID3", "Sempronio", 3000));
+				new Employee("ID1", "First employee", 1000),
+				new Employee("ID3", "Third employee", 1250));
 	}
 	
 	@Test
 	public void test_findOne() {
-		assertThat(repository.findOne("ID2")).isEqualTo(Optional.of(new Employee("ID2", "Caio", 2000)));
+		putMap(new Employee("ID1", "First employee", 1000));
+		putMap(new Employee("ID3", "Third employee", 1250));
+		
+		assertThat(repository.findOne("ID3")).hasValue(new Employee("ID3", "Third employee", 1250));
+		assertThat(repository.findOne("ID2")).isNotPresent();
 	}
 	
 	@Test
-	public void test_save_new_Employee() {
-		repository.save(new Employee("ID4", "a new employee", 1500));
-		assertThat(employees.get("ID4")).isEqualTo(new Employee("ID4", "a new employee", 1500));
+	public void test_save_new_Employee_with_existing_id() {
+		repository.save(new Employee("ID2", "a new employee", 2500));
+		assertThat(employees.get("ID2")).isEqualTo(new Employee("ID2", "a new employee", 2500));
 	}
 	
 	@Test
-	public void test_save_existing_Employee() {
+	public void test_save_replace_Employee_with_existing_id() {
+		putMap(new Employee("ID2", "a new employee", 2500));
+		
 		repository.save(new Employee("ID2", "replacement employee", 1750));
+		
 		assertThat(employees.get("ID2")).isEqualTo(new Employee("ID2", "replacement employee", 1750));
+	}
+	
+	@Test
+	public void test_save_Employee_without_id_is_generated_automatically() {
+		String expectedId = "ID1";
+		Employee newEmployee = repository.save(new Employee(null, "anonimous employee", 3500));
+		String generatedId = newEmployee.getEmployeeId();
+		
+		assertThat(generatedId).isEqualTo(expectedId);
+		assertThat(employees).containsKey(generatedId);
+		assertThat(employees.get(generatedId)).isEqualTo(new Employee(generatedId, "anonimous employee", 3500));
 	}
 
 }
