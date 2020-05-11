@@ -1,13 +1,19 @@
 package com.examples.simple_rest_service;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -19,38 +25,28 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.examples.EmployeeResource;
-import com.examples.NotFoundMapper;
 import com.examples.model.Employee;
-import com.examples.repository.EmployeeRepository;
+import com.exmaples.service.EmployeeService;
 
 import io.restassured.RestAssured;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.Status;
 
 public class EmployeeResourceRestAssuredTest extends JerseyTest{
 	private static final String EMPLOYEES = "employees";
 	
 	@Mock
-	private EmployeeRepository employeeRepository;
+	private EmployeeService employeeService;
 	
 	@Override
 	protected Application configure() {
 		MockitoAnnotations.initMocks(this);
 		// we register only the EmployeeResource class
 		return new ResourceConfig(EmployeeResource.class)
-				// Jersey need this class without scanning the whole
-				// package, so we register it.
-				.register(NotFoundMapper.class)
 				// for mock injection, similar to Guice
 				.register(new AbstractBinder() {
 					@Override
 					protected void configure() {
 						// in Guice the bind is in reverse
-						bind(employeeRepository).to(EmployeeRepository.class);
+						bind(employeeService).to(EmployeeService.class);
 					}
 				});
 	}
@@ -69,7 +65,7 @@ public class EmployeeResourceRestAssuredTest extends JerseyTest{
 	
 	@Test
 	public void test_get_all_employees_JSON() {
-		when(employeeRepository.findAll())
+		when(employeeService.allEmployees())
 			.thenReturn(populateList());
 		
 		given()
@@ -90,7 +86,7 @@ public class EmployeeResourceRestAssuredTest extends JerseyTest{
 	
 	@Test
 	public void test_get_all_employees_with_root_paths() {
-		when(employeeRepository.findAll())
+		when(employeeService.allEmployees())
 			.thenReturn(populateList());
 		
 		// This is a variation to show alternative use of XML
@@ -113,7 +109,7 @@ public class EmployeeResourceRestAssuredTest extends JerseyTest{
 	
 	@Test
 	public void test_get_all_employees_XML() {
-		when(employeeRepository.findAll())
+		when(employeeService.allEmployees())
 		.thenReturn(populateList());
 		
 		given()
@@ -133,8 +129,8 @@ public class EmployeeResourceRestAssuredTest extends JerseyTest{
 	
 	@Test
 	public void test_Get_one_employee_JSON() {
-		when(employeeRepository.findOne("ID2"))
-			.thenReturn(Optional.of(new Employee("ID2","An Employee",2000)));
+		when(employeeService.getEmployeeById("ID2"))
+			.thenReturn(new Employee("ID2","An Employee",2000));
 		
 		given()
 			.accept(MediaType.APPLICATION_JSON)
@@ -149,37 +145,11 @@ public class EmployeeResourceRestAssuredTest extends JerseyTest{
 				);
 	}
 
-	@Test
-	public void test_get_one_employee_with_no_existing_id_JSON() {
-		when(employeeRepository.findOne(anyString()))
-			.thenReturn(Optional.empty());
-		
-		given()
-			.accept(MediaType.APPLICATION_JSON)
-		.when()
-			.get(EMPLOYEES+"/notAnId")
-		.then()
-			.statusCode(404)
-			.contentType(MediaType.TEXT_PLAIN)
-			.body(equalTo("Employee id not found: notAnId"));
-	}
-	
-	@Test
-	public void test_get_one_employee_with_no_existing_id_XML() {
-		given()
-			.accept(MediaType.APPLICATION_XML)
-		.when()
-			.get(EMPLOYEES+"/notAnId")
-		.then()
-			.statusCode(404)
-			.contentType(MediaType.TEXT_PLAIN)
-			.body(equalTo("Employee id not found: notAnId"));
-	}
-	
+
 	@Test
 	public void test_get_one_employee_XML() {
-		when(employeeRepository.findOne("ID3"))
-			.thenReturn(Optional.of(new Employee("ID3","Third Employee",2500)));
+		when(employeeService.getEmployeeById("ID3"))
+			.thenReturn(new Employee("ID3","Third Employee",2500));
 		
 		given()
 			.accept(MediaType.APPLICATION_XML)
@@ -207,7 +177,7 @@ public class EmployeeResourceRestAssuredTest extends JerseyTest{
 	@Test
 	public void test_count() {
 		List<Employee> employees = Arrays.asList(new Employee(), new Employee());
-		when(employeeRepository.findAll()).thenReturn(employees);
+		when(employeeService.allEmployees()).thenReturn(employees);
 		
 		when()
 			.get(EMPLOYEES+"/count")
@@ -223,7 +193,7 @@ public class EmployeeResourceRestAssuredTest extends JerseyTest{
 				.add("name", "passed name")
 				.add("salary", 1000)
 				.build();
-		when(employeeRepository.save(new Employee(null, "passed name", 1000)))
+		when(employeeService.addEmployee(new Employee(null, "passed name", 1000)))
 			.thenReturn(new Employee("ID", "returned name", 1250));
 		
 		given()
@@ -246,7 +216,7 @@ public class EmployeeResourceRestAssuredTest extends JerseyTest{
 				.add("name", "passed name")
 				.add("salary", 1000)
 				.build();
-		when(employeeRepository.save(new Employee("ID", "passed name", 1000)))
+		when(employeeService.replaceEmployee("ID", new Employee(null, "passed name", 1000)))
 			.thenReturn(new Employee("ID", "returned name", 1250));
 		
 		given()

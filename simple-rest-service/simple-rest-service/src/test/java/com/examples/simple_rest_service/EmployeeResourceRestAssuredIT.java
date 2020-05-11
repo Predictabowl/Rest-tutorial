@@ -90,10 +90,21 @@ public class EmployeeResourceRestAssuredIT {
 
 	@Test
 	public void test_get_all_employees_JSON() {
-		given().accept(MediaType.APPLICATION_JSON).when().get(EMPLOYEES).then().statusCode(200).assertThat().body(
-				"id[0]", equalTo("ID1"), "name[0]", equalTo("Tizio"), "salary[0]", equalTo(1000), "id[1]",
-				equalTo("ID2"), "name[1]", equalTo("Caio"), "salary[1]", equalTo(2000), "id[2]", equalTo("ID3"),
-				"name[2]", equalTo("Sempronio"), "salary[2]", equalTo(3000));
+		given()
+			.accept(MediaType.APPLICATION_JSON)
+		.when()
+			.get(EMPLOYEES)
+		.then()
+			.statusCode(200)
+			.assertThat().body("id[0]", equalTo("ID1"),
+					"name[0]", equalTo("Tizio"),
+					"salary[0]", equalTo(1000),
+					"id[1]", equalTo("ID2"),
+					"name[1]", equalTo("Caio"),
+					"salary[1]", equalTo(2000),
+					"id[2]", equalTo("ID3"),
+					"name[2]", equalTo("Sempronio"),
+					"salary[2]", equalTo(3000));
 	}
 
 	@Test

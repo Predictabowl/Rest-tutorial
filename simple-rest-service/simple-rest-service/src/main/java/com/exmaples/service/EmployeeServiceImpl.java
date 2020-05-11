@@ -2,6 +2,7 @@ package com.exmaples.service;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 
@@ -12,6 +13,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	private EmployeeRepository employeeRepository;
 
+	@Inject
 	public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
 		this.employeeRepository = employeeRepository;
 	}
@@ -24,7 +26,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public Employee getEmployeeById(String id) {
 		return employeeRepository.findOne(id)
-				.orElseThrow(() -> new NotFoundException("Employee not found with id " + id));
+				.orElseThrow(() -> new NotFoundException("Employee id not found: " + id));
 	}
 
 	@Override
@@ -40,7 +42,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			employee.setEmployeeId(id);
 			return employeeRepository.save(employee);
 		}
-		throw new NotFoundException("Employee not found with id: "+id);
+		throw new NotFoundException("Employee id not found: "+id);
 	}
 
 	private void checkRequest(Employee employee) {

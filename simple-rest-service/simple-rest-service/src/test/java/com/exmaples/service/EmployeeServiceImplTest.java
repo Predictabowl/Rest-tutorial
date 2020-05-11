@@ -59,7 +59,7 @@ public class EmployeeServiceImplTest {
 		when(repository.findOne(anyString())).thenReturn(Optional.ofNullable(null));
 	
 		assertThatExceptionOfType(NotFoundException.class).isThrownBy(() ->
-				service.getEmployeeById("ID1")).withMessage("Employee not found with id ID1");
+				service.getEmployeeById("ID1")).withMessage("Employee id not found: ID1");
 		
 	}
 	
@@ -114,7 +114,7 @@ public class EmployeeServiceImplTest {
 		
 		assertThatExceptionOfType(NotFoundException.class).isThrownBy(()-> 
 			service.replaceEmployee("ID2", new Employee(null,"replacement",2000)))
-			.withMessage("Employee not found with id: ID2");
+			.withMessage("Employee id not found: ID2");
 		verify(repository).findOne("ID2");
 		verifyNoMoreInteractions(repository);
 	}

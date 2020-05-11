@@ -9,6 +9,8 @@ import org.glassfish.jersey.server.ResourceConfig;
 import com.examples.model.Employee;
 import com.examples.repository.EmployeeRepository;
 import com.examples.repository.InMemoryEmployeeRepository;
+import com.exmaples.service.EmployeeService;
+import com.exmaples.service.EmployeeServiceImpl;
 
 import java.io.IOException;
 import java.net.URI;
@@ -39,6 +41,7 @@ public class Main {
 					protected void configure() {
 						bind(InMemoryEmployeeRepository.class).to(EmployeeRepository.class)
 							.in(Singleton.class);
+						bind(EmployeeServiceImpl.class).to(EmployeeService.class);
 						bindAsContract(new TypeLiteral<LinkedHashMap<String, Employee>>(){})
 							.to(new TypeLiteral<Map<String, Employee>>(){});
 					}

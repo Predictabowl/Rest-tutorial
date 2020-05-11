@@ -2,6 +2,7 @@ package com.examples;
 
 import com.examples.model.Employee;
 import com.examples.repository.EmployeeRepository;
+import com.exmaples.service.EmployeeService;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -32,27 +33,26 @@ import javax.ws.rs.core.UriInfo;
 public class EmployeeResource {
 	
 	@Inject
-	private EmployeeRepository employeeRepository;
+	private EmployeeService employeeService;
 
 	@GET
 	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
 	public List<Employee> getAllEmployees() {
-		return employeeRepository.findAll();
+		return employeeService.allEmployees();
 	}
 	
 	@GET
 	@Path("{id}")
 	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
 	public Employee getOnEmployee(@PathParam("id") String id) {
-		return employeeRepository.findOne(id).orElseThrow(() ->
-				new NotFoundException("Employee id not found: "+id));
+		return employeeService.getEmployeeById(id);
 	}
 	
 	@GET
 	@Path("count")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getCount() {
-		return String.valueOf(employeeRepository.findAll().size());
+		return String.valueOf(employeeService.allEmployees().size());
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public class EmployeeResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addEmployee(Employee employee, @Context UriInfo uriInfo) throws URISyntaxException {
-		Employee newEmployee = employeeRepository.save(employee); 
+		Employee newEmployee = employeeService.addEmployee(employee); 
 		return Response
 				.created(new URI(uriInfo.getAbsolutePath()+"/"+newEmployee.getEmployeeId()))
 				.entity(newEmployee)
@@ -75,7 +75,6 @@ public class EmployeeResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Employee replaceEmployee(@PathParam("id") String id, Employee employee) {
-		employee.setEmployeeId(id);
-		return employeeRepository.save(employee);
+		return employeeService.replaceEmployee(id, employee);
 	}
 }
