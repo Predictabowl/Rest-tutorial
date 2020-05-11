@@ -1,9 +1,5 @@
 package com.examples;
 
-import com.examples.model.Employee;
-import com.examples.repository.EmployeeRepository;
-import com.exmaples.service.EmployeeService;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -11,7 +7,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -20,8 +15,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+
+import com.examples.model.Employee;
+import com.examples.service.EmployeeService;
 
 /**
  * root resource (exposed at "employee" path)

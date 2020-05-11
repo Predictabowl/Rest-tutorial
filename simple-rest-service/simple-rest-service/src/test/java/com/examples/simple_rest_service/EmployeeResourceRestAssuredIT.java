@@ -1,10 +1,10 @@
 package com.examples.simple_rest_service;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -14,6 +14,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
 
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
@@ -27,11 +32,6 @@ import com.examples.Main;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.Status;
 
 public class EmployeeResourceRestAssuredIT {
 	private static final String EMPLOYEES = "employees";

@@ -26,7 +26,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.examples.EmployeeResource;
 import com.examples.model.Employee;
-import com.exmaples.service.EmployeeService;
+import com.examples.service.EmployeeService;
 
 import io.restassured.RestAssured;
 

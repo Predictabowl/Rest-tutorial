@@ -9,8 +9,8 @@ import org.glassfish.jersey.server.ResourceConfig;
 import com.examples.model.Employee;
 import com.examples.repository.EmployeeRepository;
 import com.examples.repository.InMemoryEmployeeRepository;
-import com.exmaples.service.EmployeeService;
-import com.exmaples.service.EmployeeServiceImpl;
+import com.examples.service.EmployeeService;
+import com.examples.service.EmployeeServiceImpl;
 
 import java.io.IOException;
 import java.net.URI;
