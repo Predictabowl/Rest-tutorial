@@ -9,4 +9,5 @@ public interface EmployeeRepository {
 	List<Employee> findAll();
 	Optional<Employee> findOne(String id);
 	Employee save(Employee employee);
+	Optional<Employee> delete(String id);
 }

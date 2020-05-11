@@ -53,4 +53,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 					"Expecting id Specification in Employee to be absent, but was: " + employee.getEmployeeId());
 	}
 
+	@Override
+	public Employee deleteEmployeeById(String id) {
+		return employeeRepository.delete(id).orElse(null);
+	}
+
 }

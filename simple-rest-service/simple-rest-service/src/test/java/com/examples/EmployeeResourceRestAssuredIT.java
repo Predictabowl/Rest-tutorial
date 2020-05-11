@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response.Status;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -196,7 +197,8 @@ public class EmployeeResourceRestAssuredIT {
 				);
 	}
 	
-	@Test public void test_put_BadRequest_when_id_is_part_of_the_body() {
+	@Test 
+	public void test_put_BadRequest_when_id_is_part_of_the_body() {
 		JsonObject jsonObj = Json.createObjectBuilder()
 				.add("id", "ID1")
 				.add("name", "modified employee")
@@ -213,5 +215,30 @@ public class EmployeeResourceRestAssuredIT {
 			.assertThat()
 				.contentType(MediaType.TEXT_PLAIN)
 				.body(equalTo("Expecting id Specification in Employee to be absent, but was: ID1"));
+	}
+	
+	@Test
+	public void test_delete_when_id_is_existing() {
+		given()
+			.accept(MediaType.APPLICATION_JSON)
+		.when()
+			.delete(EMPLOYEES+"/ID1")
+		.then()
+			.statusCode(Status.ACCEPTED.getStatusCode())
+			.assertThat()
+				.contentType(MediaType.APPLICATION_JSON)
+				.body("id", equalTo("ID1"),
+					"name", equalTo("Tizio"),
+					"salary", equalTo(1000));
+		
+		given()
+			.accept(MediaType.APPLICATION_JSON)
+		.when()
+			.get(EMPLOYEES+"/ID1")
+		.then()
+			.statusCode(Status.NOT_FOUND.getStatusCode())
+			.contentType(MediaType.TEXT_PLAIN)
+			.assertThat()
+				.body(equalTo("Employee id not found: ID1"));
 	}
 }

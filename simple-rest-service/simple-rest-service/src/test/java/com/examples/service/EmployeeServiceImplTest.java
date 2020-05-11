@@ -141,4 +141,23 @@ public class EmployeeServiceImplTest {
 			service.replaceEmployee("ID3",null)).withMessage("Missing values for Employee");
 		verifyNoInteractions(repository);
 	}
+	
+	@Test
+	public void test_deleteEmployeeById_success() {
+		Employee employee = new Employee("ID4", "some guy", 1350);
+		
+		when(repository.delete("ID4")).thenReturn(Optional.of(employee));
+		
+		assertThat(service.deleteEmployeeById("ID4")).isEqualTo(employee);
+		verify(repository).delete("ID4");
+		verifyNoMoreInteractions(repository);
+	}
+	
+	@Test
+	public void test_deleteEmployeeById_without_existing_id() {
+		when(repository.delete("ID3")).thenReturn(Optional.empty());
+		
+		assertThat(service.deleteEmployeeById("ID3")).isNull();
+	}
+
 }

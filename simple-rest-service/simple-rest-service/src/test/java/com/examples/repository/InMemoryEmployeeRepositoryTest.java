@@ -3,6 +3,7 @@ package com.examples.repository;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class InMemoryEmployeeRepositoryTest {
 	}
 	
 	@Test
-	public void test_save_replace_Employee_with_existing_id() {
+	public void test_replace_Employee_with_existing_id() {
 		putMap(new Employee("ID2", "a new employee", 2500));
 		
 		repository.save(new Employee("ID2", "replacement employee", 1750));
@@ -70,6 +71,24 @@ public class InMemoryEmployeeRepositoryTest {
 		assertThat(generatedId).isEqualTo(expectedId);
 		assertThat(employees).containsKey(generatedId);
 		assertThat(employees.get(generatedId)).isEqualTo(new Employee(generatedId, "anonimous employee", 3500));
+	}
+	
+	@Test
+	public void test_delete_Employee_success() {
+		putMap(new Employee("ID1", "first employee", 1200));
+		
+		assertThat(repository.delete("ID1")).isEqualTo(Optional.of(new Employee("ID1", "first employee", 1200)));
+		assertThat(employees).isEmpty();
+	}
+	
+	@Test
+	public void test_delete_Employee_without_existing_id() {
+		Employee employee = new Employee("ID1", "first employee", 1200); 
+		putMap(employee);
+		
+		assertThat(repository.delete("ID2")).isNotPresent();
+		assertThat(employees.get("ID1")).isEqualTo(employee);
+		assertThat(employees.size()).isEqualTo(1);
 	}
 
 }

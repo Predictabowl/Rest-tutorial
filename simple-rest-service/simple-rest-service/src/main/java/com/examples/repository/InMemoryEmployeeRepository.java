@@ -48,4 +48,9 @@ public class InMemoryEmployeeRepository implements EmployeeRepository{
 		mapPut(employee);
 		return employee;
 	}
+
+	@Override
+	public Optional<Employee> delete(String id) {
+		return Optional.ofNullable(employees.remove(id));
+	}
 }

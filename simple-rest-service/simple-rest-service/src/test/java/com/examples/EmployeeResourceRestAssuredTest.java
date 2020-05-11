@@ -231,4 +231,29 @@ public class EmployeeResourceRestAssuredTest extends JerseyTest{
 					"name",equalTo("returned name"),
 					"salary",equalTo(1250));
 	}
+	
+	@Test
+	public void test_delete_existing_employee() {
+		when(employeeService.deleteEmployeeById("ID"))
+			.thenReturn(new Employee("ID","deleted employee",1000))
+			.thenReturn(null);
+		
+		when()
+			.delete(EMPLOYEES+"/ID")
+		.then()
+			.statusCode(Status.ACCEPTED.getStatusCode())
+			.assertThat()
+				.body("id", equalTo("ID"),
+					"name", equalTo("deleted employee"),
+					"salary", equalTo(1000));
+		
+		//idempotence
+		when()
+			.delete(EMPLOYEES+"/ID")
+		.then()
+			.statusCode(Status.ACCEPTED.getStatusCode())
+			.assertThat()
+				.body(Matchers.isEmptyString());
+
+	}
 }
