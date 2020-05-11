@@ -1,4 +1,4 @@
-package com.examples.simple_rest_service;
+package com.examples;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.endsWith;
@@ -194,5 +194,24 @@ public class EmployeeResourceRestAssuredIT {
 					"name", equalTo("modified employee"),
 					"salary", equalTo(1750)
 				);
+	}
+	
+	@Test public void test_put_BadRequest_when_id_is_part_of_the_body() {
+		JsonObject jsonObj = Json.createObjectBuilder()
+				.add("id", "ID1")
+				.add("name", "modified employee")
+				.add("salary", 2000)
+				.build();
+		
+		given()
+			.contentType(MediaType.APPLICATION_JSON)
+			.body(jsonObj.toString())
+		.when()
+			.put(EMPLOYEES+"/ID1")
+		.then()
+			.statusCode(Status.BAD_REQUEST.getStatusCode())
+			.assertThat()
+				.contentType(MediaType.TEXT_PLAIN)
+				.body(equalTo("Expecting id Specification in Employee to be absent, but was: ID1"));
 	}
 }

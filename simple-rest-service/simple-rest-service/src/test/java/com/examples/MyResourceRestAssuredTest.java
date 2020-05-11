@@ -1,4 +1,4 @@
-package com.examples.simple_rest_service;
+package com.examples;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;

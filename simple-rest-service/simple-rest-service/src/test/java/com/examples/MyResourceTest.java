@@ -1,4 +1,4 @@
-package com.examples.simple_rest_service;
+package com.examples;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
