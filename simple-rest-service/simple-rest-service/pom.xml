@@ -159,6 +159,9 @@
 							<goal>verify</goal>
 						</goals>
 						<configuration>
+							<systemPropertyVariables>
+								<server.port>${server.service.port}</server.port>
+							</systemPropertyVariables>
 							<includes>
 								<include>**/*E2E.java</include>
 							</includes>
